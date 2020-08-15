@@ -46,21 +46,22 @@ namespace ArathsBaby.WebAPI
             services.AddDbContext<ArathsBabyContext>(options => 
                     options.UseSqlServer(Configuration.GetConnectionString("ArathsBabyContext")));
 
-            services.AddAuthentication().AddFacebook(facebookOptions =>
-            {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                facebookOptions.Events = new OAuthEvents()
-                {
-                    OnRemoteFailure = loginFailureHandler =>
-                    {
-                        var authProperties = facebookOptions.StateDataFormat.Unprotect(loginFailureHandler.Request.Query["state"]);
-                        loginFailureHandler.Response.Redirect("/Users/login");
-                        loginFailureHandler.HandleResponse();
-                        return Task.FromResult(0);
-                    }
-                };
-            });
+            services.AddAuthentication();
+            //.AddFacebook(facebookOptions =>
+            //{
+            //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+            //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            //    facebookOptions.Events = new OAuthEvents()
+            //    {
+            //        OnRemoteFailure = loginFailureHandler =>
+            //        {
+            //            var authProperties = facebookOptions.StateDataFormat.Unprotect(loginFailureHandler.Request.Query["state"]);
+            //            loginFailureHandler.Response.Redirect("/Users/login");
+            //            loginFailureHandler.HandleResponse();
+            //            return Task.FromResult(0);
+            //        }
+            //    };
+            //});
 
         }
 

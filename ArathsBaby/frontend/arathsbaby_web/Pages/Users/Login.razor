@@ -47,14 +47,13 @@
 @code {
 
     public UserInfo userInfo = new UserInfo();
-    private const string baseUrl = "https://localhost:44348/";
 
     public string LoginMesssage { get; set; }
 
     private async Task ValidateUser()
     {
 
-        var rpta = await Http.PostJsonAsync<int>($"{baseUrl}api/Account", userInfo);
+        var rpta = await Http.PostJsonAsync<int>($"api/Account", userInfo);
 
         if (rpta != 0)
         {

@@ -125,11 +125,10 @@
 @code {
 
     Users user = new Users();
-    public string baseUrl = "https://localhost:44348/";
 
     async Task RegisterUser()
     {
-        await Http.PostAsJsonAsync($"{baseUrl}api/Users",user);
+        await Http.PostAsJsonAsync($"api/Users",user);
         Navigation.NavigateTo("/Users/login");
     }
 }

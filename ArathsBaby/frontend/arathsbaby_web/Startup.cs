@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Blazored.SessionStorage;
 using arathsbaby_web.Data;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Reflection.Metadata.Ecma335;
 
 namespace arathsbaby_web
 {
@@ -37,24 +38,31 @@ namespace arathsbaby_web
             services.AddBlazoredSessionStorage();
             services.AddHttpClient();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-            
-            services.AddSingleton<HttpClient>();
 
-            services.AddAuthentication().AddFacebook(facebookOptions =>
+            services.AddSingleton<HttpClient>(s =>
             {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                facebookOptions.Events = new OAuthEvents()
+                return new HttpClient
                 {
-                    OnRemoteFailure = loginFailureHandler =>
-                    {
-                        var authProperties = facebookOptions.StateDataFormat.Unprotect(loginFailureHandler.Request.Query["state"]);
-                        loginFailureHandler.Response.Redirect("/Users/login");
-                        loginFailureHandler.HandleResponse();
-                        return Task.FromResult(0);
-                    }
+                    BaseAddress = new Uri(Configuration.GetValue<string>("ServiceUri"))
                 };
             });
+
+            services.AddAuthentication();
+            //.AddFacebook(facebookOptions =>
+            //{
+            //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+            //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            //    facebookOptions.Events = new OAuthEvents()
+            //    {
+            //        OnRemoteFailure = loginFailureHandler =>
+            //        {
+            //            var authProperties = facebookOptions.StateDataFormat.Unprotect(loginFailureHandler.Request.Query["state"]);
+            //            loginFailureHandler.Response.Redirect("/Users/login");
+            //            loginFailureHandler.HandleResponse();
+            //            return Task.FromResult(0);
+            //        }
+            //    };
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,8 +81,11 @@ namespace arathsbaby_web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseAuthentication();
 
 
 

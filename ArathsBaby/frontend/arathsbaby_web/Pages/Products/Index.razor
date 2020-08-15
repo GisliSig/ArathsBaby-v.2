@@ -1,7 +1,7 @@
 ﻿@page "/catalog"
 @inject HttpClient Http
 @inject IJSRuntime JS
-
+@attribute [Authorize(Roles ="Admin")]
 <AuthorizeView>
     <Authorized>
         <div>
@@ -59,7 +59,6 @@ else
 @code {
 
     Product[] product { get; set; }
-    private const string baseUrl = "https://localhost:44348/";
     string errorS;
 
 
@@ -74,7 +73,7 @@ else
     {
         try
         {
-            product = await Http.GetJsonAsync<Product[]>($"{baseUrl}api/Product");
+            product = await Http.GetJsonAsync<Product[]>($"api/Product");
             errorS = null;
         }
         catch (Exception ex)
@@ -89,7 +88,7 @@ else
         string messageConfirm = $"¿Esta seguro de eliminar el porducto {productSelect.Id}?";
         if (await JS.Confirm("Cuidado", messageConfirm, IJSExtensions.TypeMessageSweetAler.warning))
         {
-            await Http.DeleteAsync($"{baseUrl}api/Product/{Id}");
+            await Http.DeleteAsync($"api/Product/{Id}");
             await CargarProduct();
         }
 

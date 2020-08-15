@@ -1,7 +1,7 @@
 ﻿@page "/editproduct/{Id:int}"
 @inject HttpClient Http
 @inject NavigationManager Navigation
-
+@attribute [Authorize(Roles ="Admin")]
 <h1>Editar producto</h1>
 <br />
 
@@ -10,14 +10,12 @@
 @code {
     [Parameter] public int Id { get; set; }
 
-    public string baseUrl = "https://localhost:44348/";
     Product product = new Product();
 
 
     async Task Editar()
     {
-        string endpoint = $"{baseUrl}api/Product/{Id}";
-        await Http.SendJsonAsync(HttpMethod.Put, endpoint, product);
+        await Http.SendJsonAsync(HttpMethod.Put, $"api/Product/{Id}", product);
         Navigation.NavigateTo("catalog");
         StateHasChanged();
 
@@ -25,7 +23,7 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        product = await Http.GetJsonAsync<Product>($"{baseUrl}api/Product/{Id}");
+        product = await Http.GetJsonAsync<Product>($"api/Product/{Id}");
     }
 
 
